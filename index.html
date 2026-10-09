@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iREd — Premium Streetwear & Athletic Combat Experience</title>
+  <meta name="description" content="Официальный интерактивный опыт iREd. Точное воплощение концепта: от бойцовского ринга до лимитированного худи и кинетического чекаута.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800;900&family=Cinzel:wght@500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Custom Reactive Cursor -->
+  <div id="custom-cursor" class="cursor-glow" aria-hidden="true"></div>
+  <div id="cursor-dot" class="cursor-dot" aria-hidden="true"></div>
+
+  <!-- Background Canvas for Atmospheric Particles & Energy Waves -->
+  <canvas id="bg-canvas"></canvas>
+  <div class="noise-overlay" aria-hidden="true"></div>
+  <div class="ambient-glow" aria-hidden="true"></div>
+
+  <!-- Master Top Navigation & Flow HUD -->
+  <header class="master-hud">
+    <div class="hud-brand" id="hud-home-btn" role="button" tabindex="0" title="На главную">
+      <div class="brand-i">
+        <span class="brand-dot"></span>
+        <span>i</span>
+      </div>
+      <span class="brand-r">R</span>
+      <span class="brand-e">E</span>
+      <span class="brand-d">d</span>
+    </div>
+
+    <!-- Stepper Navigation corresponding to Figma frames -->
+    <nav class="flow-stepper" aria-label="Сюжетная навигация">
+      <button class="step-pill active" data-step="1" title="MacBook Air - 10: Логотип">
+        <span class="step-num">01</span>
+        <span class="step-name">iREd Logo</span>
+      </button>
+      <div class="step-divider"></div>
+      <button class="step-pill" data-step="2" title="MacBook Air - 13: Ринг и экипировка">
+        <span class="step-num">02</span>
+        <span class="step-name">The Ring</span>
+      </button>
+      <div class="step-divider"></div>
+      <button class="step-pill" data-step="3" title="MacBook Air - 12: Профиль атлета">
+        <span class="step-num">03</span>
+        <span class="step-name">Profile</span>
+      </button>
+      <div class="step-divider"></div>
+      <button class="step-pill" data-step="4" title="MacBook Air - 12 (bottom): Lookbook">
+        <span class="step-num">04</span>
+        <span class="step-name">Lookbook</span>
+      </button>
+      <div class="step-divider"></div>
+      <button class="step-pill" data-step="5" title="MacBook Air - 14: Продукт Hoodie">
+        <span class="step-num">05</span>
+        <span class="step-name">Product</span>
+      </button>
+      <div class="step-divider"></div>
+      <button class="step-pill" data-step="6" title="MacBook Air - 15..18: 3D Оплата">
+        <span class="step-num">06</span>
+        <span class="step-name">Payment</span>
+      </button>
+    </nav>
+
+    <div class="hud-controls">
+      <button class="audio-toggle-btn" id="audio-toggle" title="Звуковые эффекты (клавиша M)">
+        <span class="audio-bars">
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </span>
+        <span class="audio-status">SOUND: OFF</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN STORYBOARD STAGE CONTAINER ==================== -->
+  <main class="story-stage-wrapper">
+
+    <!-- ==================== SCREEN 1: MacBook Air - 10 (INTRO LOGO) ==================== -->
+    <section class="screen-view active" id="screen-1" data-screen-index="1">
+      <div class="screen-bg-silhouette">
+        <img src="assets/boxer.jpg" alt="Background Boxer Athlete Silhouette" class="silhouette-img">
+      </div>
+      <div class="intro-monolith-box">
+        <div class="figma-layer-tag">_Слой_2</div>
+        
+        <div class="ired-logo-stage" id="screen1-logo">
+          <div class="logo-col letter-i">
+            <div class="red-dot-core" id="pulse-dot">
+              <div class="red-orb"></div>
+              <div class="orb-halo"></div>
+              <div class="orb-shockwave"></div>
+            </div>
+            <span class="glyph-i">i</span>
+          </div>
+          <div class="logo-col letter-r">
+            <span class="glyph-r">R</span>
+          </div>
+          <div class="logo-col letter-e">
+            <span class="glyph-e">E</span>
+          </div>
+          <div class="logo-col letter-d">
+            <span class="glyph-d">d</span>
+            <span class="glyph-d-shadow" aria-hidden="true">d</span>
+          </div>
+        </div>
+
+        <button class="btn-figma-open" id="btn-screen1-open">
+          <span class="open-txt">open</span>
+          <div class="open-underline"></div>
+        </button>
+      </div>
+
+      <div class="screen-footer-hint">
+        Нажмите [OPEN] или красную точку для перехода к сцене ринга
+      </div>
+    </section>
+
+    <!-- ==================== SCREEN 2: MacBook Air - 13 (THE COMBAT RING) ==================== -->
+    <section class="screen-view" id="screen-2" data-screen-index="2">
+      <div class="screen-nav-top">
+        <button class="nav-back-arrow" data-target-screen="1" title="Назад к логотипу">
+          <span class="arrow-glyph">«</span> Назад
+        </button>
+        <span class="screen-code">// MACBOOK AIR - 13 : THE COMBAT RITUAL</span>
+      </div>
+
+      <div class="ring-stage-container">
+        <!-- Main Cinematic Hero Box with Boxer Wrapping Hands -->
+        <div class="ring-hero-card glass-panel" data-tilt>
+          <div class="hero-image-wrap">
+            <img src="assets/boxer.jpg" alt="Boxer wrapping hands in ring" class="boxer-hero-img">
+            <div class="hero-image-gradient"></div>
+          </div>
+
+          <!-- Floating Gear Thumbnail Card (Top-Left from Figma) -->
+          <div class="gear-float-badge glass-panel" data-tilt>
+            <div class="gear-img-wrap">
+              <img src="assets/gloves.jpg" alt="iREd Fight Gloves" class="gloves-thumb">
+            </div>
+            <div class="gear-info">
+              <span class="gear-brand">iREd COMBAT</span>
+              <span class="gear-title">PRO LEATHER GLOVES</span>
+            </div>
+          </div>
+
+          <!-- Bottom Open Button from Figma -->
+          <div class="ring-action-zone">
+            <button class="btn-figma-open large" id="btn-screen2-open">
+              <span class="open-txt">open</span>
+              <div class="open-underline"></div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SCREEN 3: MacBook Air - 12 (ATHLETE PROFILE REGISTRATION) ==================== -->
+    <section class="screen-view" id="screen-3" data-screen-index="3">
+      <div class="screen-nav-top">
+        <button class="nav-back-arrow" data-target-screen="2">
+          <span class="arrow-glyph">«</span> Назад к рингу
+        </button>
+        <span class="screen-code">// MACBOOK AIR - 12 : ATHLETE PROFILE SETUP</span>
+      </div>
+
+      <div class="profile-layout-container">
+        <!-- Left: Profile Avatar Card from Figma -->
+        <div class="avatar-card glass-panel" data-tilt>
+          <div class="avatar-frame">
+            <div class="avatar-icon-silhouette">
+              <svg width="110" height="110" viewBox="0 0 24 24" fill="none" stroke="#717684" stroke-width="1.2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <div class="avatar-badge-online"></div>
+          </div>
+          <div class="avatar-meta">
+            <span class="avatar-tag">iREd SOVEREIGN MEMBER</span>
+            <p class="avatar-caption">It's customized athletic sizing</p>
+          </div>
+        </div>
+
+        <!-- Right: 4 Inputs from Figma -->
+        <div class="profile-form-card glass-panel">
+          <h2 class="profile-form-title">РЕГИСТРАЦИЯ АТЛЕТА</h2>
+          <form class="figma-inputs-list" id="profile-form" onsubmit="event.preventDefault(); window.iRedApp.goToScreen(4);">
+            <div class="input-card-field">
+              <span class="field-label-pill">First Name</span>
+              <input type="text" id="prof-fname" required placeholder="Enter your first name" class="figma-input" value="Alexander">
+            </div>
+
+            <div class="input-card-field">
+              <span class="field-label-pill">Last Name</span>
+              <input type="text" id="prof-lname" required placeholder="Enter your last name" class="figma-input" value="Vanguard">
+            </div>
+
+            <div class="input-card-field">
+              <span class="field-label-pill">Phone Number</span>
+              <input type="tel" id="prof-phone" required placeholder="Enter your phone number" class="figma-input" value="+1 (555) 019-2831">
+            </div>
+
+            <div class="input-card-field">
+              <span class="field-label-pill">Email Address</span>
+              <input type="email" id="prof-email" required placeholder="Enter your email address" class="figma-input" value="alexander@ired-syndicate.com">
+            </div>
+
+            <button type="submit" class="btn-figma-continue">
+              <span>ПЕРЕЙТИ К КОЛЛЕКЦИИ</span>
+              <span class="arrow-continue">»»</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SCREEN 4: MacBook Air - 12 (BOTTOM) LOOKBOOK ==================== -->
+    <section class="screen-view" id="screen-4" data-screen-index="4">
+      <div class="screen-nav-top">
+        <button class="nav-back-arrow" data-target-screen="3">
+          <span class="arrow-glyph">«</span> Назад к профилю
+        </button>
+        <span class="screen-code">// MACBOOK AIR - 12 : HOODIE DUAL PERSPECTIVE</span>
+      </div>
+
+      <div class="lookbook-container">
+        <div class="lookbook-grid">
+          <!-- Card 1: Front View with Mask -->
+          <div class="lookbook-card glass-panel" data-tilt id="card-look-front">
+            <div class="look-badge">FRONT PERSPECTIVE</div>
+            <div class="look-image-wrap">
+              <img src="assets/hoodie_front.jpg" alt="iREd Streetwear Hoodie Front View with Mask" class="look-img">
+            </div>
+            <div class="look-info">
+              <h3 class="look-title">iREd OVERSIZED HOODIE</h3>
+              <p class="look-sub">Анонимная маска, плотный черный хлопковый футер, анатомический крой.</p>
+            </div>
+          </div>
+
+          <!-- Card 2: Back View with Big Logo -->
+          <div class="lookbook-card glass-panel" data-tilt id="card-look-back">
+            <div class="look-badge">BACK PERSPECTIVE</div>
+            <div class="look-image-wrap">
+              <img src="assets/hoodie_back.jpg" alt="iREd Streetwear Hoodie Back View with Big iREd Logo" class="look-img">
+            </div>
+            <div class="look-info">
+              <h3 class="look-title">MONOLITH 'iREd.' LOGO</h3>
+              <p class="look-sub">Шелкография премиум-класса, ярко-красная точка, контрастный белоснежный принт.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="lookbook-actions">
+          <button class="btn-figma-continue" onclick="window.iRedApp.goToScreen(5);">
+            <span>ОТКРЫТЬ КАРТОЧКУ ТОВАРА ($100)</span>
+            <span class="arrow-continue">»»</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SCREEN 5: MacBook Air - 14 (PRODUCT DETAIL & SPECS) ==================== -->
+    <section class="screen-view" id="screen-5" data-screen-index="5">
+      <div class="screen-nav-top">
+        <button class="nav-back-arrow" data-target-screen="4">
+          <span class="arrow-glyph">««</span> Назад к лукбуку
+        </button>
+        <span class="screen-code">// MACBOOK AIR - 14 : PRODUCT SPECS & BUY NOW</span>
+      </div>
+
+      <div class="product-layout-container">
+        <!-- Left: Product Hero Photo from Figma -->
+        <div class="product-visual-card glass-panel" data-tilt>
+          <div class="prod-img-box">
+            <img src="assets/hoodie_front.jpg" alt="iREd Streetwear Hoodie" class="prod-photo" id="product-main-photo">
+          </div>
+          <!-- View switcher pills -->
+          <div class="prod-view-switcher">
+            <button class="view-pill active" data-img="assets/hoodie_front.jpg">FRONT VIEW</button>
+            <button class="view-pill" data-img="assets/hoodie_back.jpg">BACK LOGO</button>
+          </div>
+        </div>
+
+        <!-- Right: Specs Block from Figma -->
+        <div class="product-specs-card glass-panel">
+          <div class="spec-header">
+            <span class="spec-edition-badge">LIMITED SIGNATURE DROP</span>
+            <h1 class="spec-prod-name">iREd SIGNATURE HOODIE</h1>
+          </div>
+
+          <!-- Specs listed verbatim from Figma screenshot -->
+          <div class="spec-items-list">
+            <div class="spec-item">
+              <span class="bullet-dot"></span>
+              <p><strong>Material:</strong> Soft cotton blend.</p>
+            </div>
+            <div class="spec-item">
+              <span class="bullet-dot"></span>
+              <p><strong>Quality:</strong> Durable stitching, comfortable and long-lasting.</p>
+            </div>
+            <div class="spec-item">
+              <span class="bullet-dot"></span>
+              <p><strong>Color:</strong> Black.</p>
+            </div>
+            <div class="spec-item">
+              <span class="bullet-dot"></span>
+              <p><strong>Style:</strong> Premium Streetwear.</p>
+            </div>
+          </div>
+
+          <!-- Price & Buy Now Button from Figma -->
+          <div class="purchase-zone">
+            <div class="price-tag">
+              <span class="price-label">Price:</span>
+              <span class="price-val">$100</span>
+            </div>
+            <button class="btn-buy-now" id="btn-buy-now">
+              <span class="buy-text">BUY NOW</span>
+              <div class="buy-light-trail"></div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SCREEN 6: MacBook Air - 15..18 (3D CARD CHECKOUT FLOW) ==================== -->
+    <section class="screen-view" id="screen-6" data-screen-index="6">
+      <div class="screen-nav-top">
+        <button class="nav-back-arrow" data-target-screen="5">
+          <span class="arrow-glyph">««</span> Назад к товару
+        </button>
+        <span class="screen-code" id="checkout-step-title">// MACBOOK AIR - 15 : CARD NUMBER ENTRY</span>
+      </div>
+
+      <div class="checkout-layout-container">
+        <!-- Interactive 3D Credit Card matching Figma (Chip, Lightning graphic, Visa Debit, Red Dots) -->
+        <div class="card-scene">
+          <div class="credit-card-3d" id="credit-card" data-tilt>
+            <!-- FRONT SIDE -->
+            <div class="card-side card-front">
+              <!-- Decorative lightning / cyber accents from Figma screenshot -->
+              <div class="card-lightning lightning-1"></div>
+              <div class="card-lightning lightning-2"></div>
+              <div class="card-red-point dot-1"></div>
+              <div class="card-red-point dot-2"></div>
+
+              <!-- EMV Gold/Silver Chip from Figma -->
+              <div class="card-chip">
+                <div class="chip-line"></div>
+                <div class="chip-line"></div>
+              </div>
+
+              <!-- Center Interactive Input Display Box from Figma -->
+              <div class="card-active-input-box" id="card-active-display">
+                <span class="input-step-label" id="card-step-label">Card Number</span>
+                <div class="input-step-value" id="card-step-value">4532 8920 1142 9842</div>
+              </div>
+
+              <!-- Cardholder & Expiry mini preview -->
+              <div class="card-bottom-info">
+                <div class="card-holder-preview">
+                  <span class="mini-label">CARDHOLDER</span>
+                  <span class="mini-val" id="mini-cardholder">ALEXANDER V</span>
+                </div>
+                <div class="card-expiry-preview">
+                  <span class="mini-label">EXPIRES</span>
+                  <span class="mini-val" id="mini-expiry">08/29</span>
+                </div>
+              </div>
+
+              <!-- VISA DEBIT Logo from Figma -->
+              <div class="visa-logo-wrap">
+                <span class="visa-text">VISA</span>
+                <span class="visa-sub">DEBIT</span>
+              </div>
+            </div>
+
+            <!-- BACK SIDE (Flips when entering CVV) -->
+            <div class="card-side card-back">
+              <div class="card-magnetic-stripe"></div>
+              <div class="card-cvv-band">
+                <span class="cvv-band-label">CVV / CVC</span>
+                <div class="cvv-band-box" id="card-cvv-value">924</div>
+              </div>
+              <div class="card-back-branding">
+                <span class="brand-sub">iREd ENCRYPTED GATEWAY</span>
+                <div class="visa-logo-wrap mini">
+                  <span class="visa-text">VISA</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Step Controller for Card Fields (Frames 15, 16, 17, 18) -->
+        <div class="payment-controller-card glass-panel">
+          <div class="payment-tabs">
+            <button class="pay-tab active" data-pay-step="1">1. НОМЕР КАРТЫ</button>
+            <button class="pay-tab" data-pay-step="2">2. ВЛАДЕЛЕЦ</button>
+            <button class="pay-tab" data-pay-step="3">3. СРОК ДЕЙСТВИЯ</button>
+            <button class="pay-tab" data-pay-step="4">4. CVV КОД</button>
+          </div>
+
+          <form id="payment-form" class="payment-form" onsubmit="event.preventDefault(); window.iRedApp.processPayment();">
+            <!-- Step 1: Card Number (MacBook Air - 15) -->
+            <div class="pay-input-step active" id="step-pane-1">
+              <label for="input-card-number">Номер банковской карты</label>
+              <input type="text" id="input-card-number" maxlength="19" class="styled-pay-input" value="4532 8920 1142 9842" placeholder="4532 •••• •••• ••••">
+              <button type="button" class="btn-step-next" onclick="window.iRedApp.setPaymentStep(2);">
+                <span>ДАЛЕЕ: ИМЯ ВЛАДЕЛЬЦА</span> →
+              </button>
+            </div>
+
+            <!-- Step 2: Cardholder Name (MacBook Air - 16) -->
+            <div class="pay-input-step" id="step-pane-2">
+              <label for="input-card-name">Имя на карте (латиницей)</label>
+              <input type="text" id="input-card-name" class="styled-pay-input" value="ALEXANDER V" placeholder="FIRSTNAME LASTNAME">
+              <div class="step-btn-duo">
+                <button type="button" class="btn-step-prev" onclick="window.iRedApp.setPaymentStep(1);">← Назад</button>
+                <button type="button" class="btn-step-next" onclick="window.iRedApp.setPaymentStep(3);">ДАЛЕЕ: СРОК →</button>
+              </div>
+            </div>
+
+            <!-- Step 3: Expiry Date (MacBook Air - 17) -->
+            <div class="pay-input-step" id="step-pane-3">
+              <label for="input-card-expiry">Срок действия (ММ/ГГ)</label>
+              <input type="text" id="input-card-expiry" maxlength="5" class="styled-pay-input" value="08/29" placeholder="MM/YY">
+              <div class="step-btn-duo">
+                <button type="button" class="btn-step-prev" onclick="window.iRedApp.setPaymentStep(2);">← Назад</button>
+                <button type="button" class="btn-step-next" onclick="window.iRedApp.setPaymentStep(4);">ДАЛЕЕ: CVV →</button>
+              </div>
+            </div>
+
+            <!-- Step 4: CVV (MacBook Air - 18) -->
+            <div class="pay-input-step" id="step-pane-4">
+              <label for="input-card-cvv">Код безопасности CVV (на обороте)</label>
+              <input type="password" id="input-card-cvv" maxlength="3" class="styled-pay-input" value="924" placeholder="•••">
+              <div class="step-btn-duo">
+                <button type="button" class="btn-step-prev" onclick="window.iRedApp.setPaymentStep(3);">← Назад</button>
+                <button type="submit" class="btn-pay-complete" id="btn-pay-submit">
+                  <span>ОПЛАТИТЬ $100</span>
+                  <div class="pay-glow"></div>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SCREEN 7: PAYMENT SUCCESS / CHECKMARK MODAL ==================== -->
+    <section class="screen-view" id="screen-7" data-screen-index="7">
+      <div class="success-stage-box">
+        <div class="success-card glass-panel" data-tilt>
+          <div class="check-icon-halo">
+            <svg class="check-svg" width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path class="check-path" d="M20 6L9 17l-5-5"></path>
+            </svg>
+          </div>
+          <span class="success-tag">PAYMENT AUTHORIZED // VISA DEBIT</span>
+          <h2 class="success-title">ЗАКАЗ УСПЕШНО ОФОРМЛЕН!</h2>
+          <p class="success-desc">
+            Худи <strong>iREd Signature Hoodie ($100)</strong> зарезервировано и передано в закрытую службу курьерской доставки. Трек-номер отправлен на вашу почту.
+          </p>
+
+          <div class="order-details-pills">
+            <div class="order-pill"><span>ORDER:</span> <strong>#IRED-98421</strong></div>
+            <div class="order-pill"><span>AMOUNT:</span> <strong>$100.00 USD</strong></div>
+            <div class="order-pill"><span>CLIENT:</span> <strong id="success-client-name">Alexander V</strong></div>
+          </div>
+
+          <div class="success-actions">
+            <button class="btn-figma-continue" onclick="window.iRedApp.goToScreen(1);">
+              <span>ВЕРНУТЬСЯ В НАЧАЛО (iREd)</span>
+              <span class="arrow-continue">↺</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Scripts -->
+  <script src="audio.js"></script>
+  <script src="visualizer.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,1605 @@
+/* ==========================================================================
+   iREd — The Apex of Digital Luxury & Kinetic Streetwear
+   Full Fidelity Figma Prototype Implementation with Ultra-Animations
+   ========================================================================== */
+
+:root {
+  --bg-deep: #0a0b0e;
+  --bg-surface: #121419;
+  --bg-card: rgba(22, 25, 32, 0.72);
+  --bg-card-hover: rgba(30, 35, 46, 0.9);
+  
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.22);
+  --border-active: rgba(255, 30, 66, 0.6);
+
+  --accent-red: #ff1e42;
+  --accent-red-glow: #ff2d55;
+  --accent-ruby: #b90e2b;
+  --accent-green: #10b981;
+
+  --text-platinum: #f3f4f6;
+  --text-muted: #9ba1b0;
+  --text-dim: #5c6272;
+
+  --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Syne', sans-serif;
+  --font-serif: 'Cinzel', serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition-smooth: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  background-color: var(--bg-deep);
+  color: var(--text-platinum);
+  font-family: var(--font-main);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100vh;
+  position: relative;
+  background: radial-gradient(circle at 50% 30%, #171920 0%, var(--bg-deep) 100%);
+  overflow-x: hidden;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body:not(.is-touch) {
+    cursor: none;
+  }
+  body:not(.is-touch) a,
+  body:not(.is-touch) button,
+  body:not(.is-touch) input,
+  body:not(.is-touch) [role="button"] {
+    cursor: none;
+  }
+}
+
+/* ==========================================================================
+   CUSTOM CURSOR
+   ========================================================================== */
+.cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 320px;
+  height: 320px;
+  margin-top: -160px;
+  margin-left: -160px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  background: radial-gradient(circle, rgba(255, 30, 66, 0.14) 0%, rgba(255, 30, 66, 0.02) 50%, transparent 70%);
+  transform: translate3d(-999px, -999px, 0);
+  transition: opacity 0.3s ease, transform 0.08s linear;
+  mix-blend-mode: screen;
+}
+
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 9px;
+  height: 9px;
+  margin-top: -4.5px;
+  margin-left: -4.5px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 12px var(--accent-red), 0 0 25px var(--accent-red-glow);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate3d(-999px, -999px, 0);
+  transition: transform 0.04s linear, width 0.25s var(--ease-out-expo), height 0.25s var(--ease-out-expo);
+}
+
+.cursor-hover .cursor-dot {
+  width: 24px;
+  height: 24px;
+  margin-top: -12px;
+  margin-left: -12px;
+  background: rgba(255, 30, 66, 0.3);
+  border: 1.5px solid #ffffff;
+  backdrop-filter: blur(2px);
+}
+
+/* ==========================================================================
+   AMBIENT & CANVAS LAYERS
+   ========================================================================== */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  opacity: 0.035;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.ambient-glow {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70vw;
+  height: 60vh;
+  background: radial-gradient(ellipse at center, rgba(255, 30, 66, 0.07) 0%, transparent 70%);
+  filter: blur(80px);
+  z-index: 1;
+  pointer-events: none;
+  animation: breathe 8s infinite alternate ease-in-out;
+}
+
+@keyframes breathe {
+  0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.5; }
+  100% { transform: translate(-50%, -46%) scale(1.15); opacity: 0.9; }
+}
+
+/* ==========================================================================
+   MASTER TOP HUD & FIGMA STEPPER
+   ========================================================================== */
+.master-hud {
+  position: fixed;
+  top: 1.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(94%, 1320px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1.6rem;
+  border-radius: 50px;
+  background: rgba(16, 18, 24, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+  transition: border-color 0.3s ease;
+}
+
+.master-hud:hover {
+  border-color: rgba(255, 30, 66, 0.35);
+}
+
+.hud-brand {
+  display: flex;
+  align-items: baseline;
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+}
+
+.brand-i {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  color: #a4a8b2;
+}
+
+.brand-dot {
+  position: absolute;
+  top: -3px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-red);
+  box-shadow: 0 0 10px var(--accent-red);
+}
+
+.brand-r { color: #cfd3dc; }
+.brand-e { color: #ffffff; }
+.brand-d { color: #5d616c; }
+
+.flow-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.step-divider {
+  width: 12px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.step-pill {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  padding: 0.35rem 0.85rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.25s ease;
+}
+
+.step-num {
+  color: var(--accent-red);
+  font-weight: 700;
+}
+
+.step-pill:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.step-pill.active {
+  background: rgba(255, 30, 66, 0.15);
+  border-color: rgba(255, 30, 66, 0.4);
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(255, 30, 66, 0.2);
+}
+
+.audio-toggle-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: 30px;
+  padding: 0.4rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.audio-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.audio-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+
+.audio-bars .bar {
+  width: 2.5px;
+  height: 4px;
+  background: var(--text-muted);
+  border-radius: 1px;
+}
+
+.audio-active .audio-bars .bar {
+  background: var(--accent-red);
+  animation: eq 0.8s infinite ease-in-out alternate;
+}
+.audio-active .audio-bars .bar:nth-child(2) { animation-delay: 0.2s; }
+.audio-active .audio-bars .bar:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes eq {
+  0% { height: 3px; }
+  100% { height: 12px; }
+}
+
+/* ==========================================================================
+   GLASS PANELS & BASE STYLING
+   ========================================================================== */
+.glass-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 24px;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+  transition: transform 0.4s var(--ease-out-expo), border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.glass-panel:hover {
+  border-color: rgba(255, 30, 66, 0.35);
+  box-shadow: 0 30px 70px rgba(255, 30, 66, 0.12), 0 0 20px rgba(255, 30, 66, 0.05);
+}
+
+.screen-nav-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.nav-back-arrow {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  padding: 0.5rem 1.2rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.25s ease;
+}
+
+.nav-back-arrow:hover {
+  background: rgba(255, 30, 66, 0.15);
+  border-color: var(--accent-red);
+  color: #fff;
+  transform: translateX(-3px);
+}
+
+.screen-code {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--accent-red);
+  letter-spacing: 0.15em;
+  opacity: 0.85;
+}
+
+/* ==========================================================================
+   STORYBOARD STAGE & SCREEN VIEWS
+   ========================================================================== */
+.story-stage-wrapper {
+  position: relative;
+  z-index: 10;
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6.5rem 2rem 3rem;
+}
+
+.screen-view {
+  display: none;
+  opacity: 0;
+  transform: translateY(20px) scale(0.98);
+  transition: opacity 0.55s var(--ease-out-expo), transform 0.55s var(--ease-out-expo);
+  width: min(94%, 1180px);
+  margin: 0 auto;
+}
+
+.screen-view.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  animation: screenReveal 0.6s var(--ease-out-expo) forwards;
+}
+
+@keyframes screenReveal {
+  0% { opacity: 0; transform: translateY(25px) scale(0.97); filter: blur(6px); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); }
+}
+
+/* ==========================================================================
+   SCREEN 1: MacBook Air - 10 (THE ICONIC MONOLITH LOGO)
+   ========================================================================== */
+#screen-1 {
+  min-height: calc(100vh - 10rem);
+  justify-content: center;
+  position: relative;
+}
+
+.screen-bg-silhouette {
+  position: absolute;
+  inset: -50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.12;
+  filter: grayscale(100%) contrast(150%) blur(4px);
+  mix-blend-mode: screen;
+  transition: opacity 0.8s ease;
+}
+
+.silhouette-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.intro-monolith-box {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.figma-layer-tag {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.25em;
+  color: #636773;
+  margin-bottom: 2.2rem;
+  animation: fadeIn 1.2s ease forwards;
+}
+
+.ired-logo-stage {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: 3.5rem;
+  perspective: 1000px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.5s var(--ease-out-expo);
+}
+
+.ired-logo-stage:hover {
+  transform: scale(1.03) translateY(-3px);
+}
+
+.logo-col {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.glyph-i, .glyph-r, .glyph-e, .glyph-d {
+  font-family: var(--font-display);
+  font-size: clamp(6.5rem, 15vw, 13.5rem);
+  font-weight: 900;
+  line-height: 0.82;
+  letter-spacing: -0.04em;
+  display: block;
+}
+
+.letter-i { margin-right: 0.4rem; }
+.glyph-i { color: #a4a7af; }
+
+.red-dot-core {
+  position: relative;
+  width: clamp(2rem, 4vw, 3.4rem);
+  height: clamp(2rem, 4vw, 3.4rem);
+  margin-bottom: clamp(0.7rem, 1.8vw, 1.4rem);
+  cursor: pointer;
+  transition: transform 0.3s var(--ease-elastic);
+}
+
+.red-dot-core:hover {
+  transform: scale(1.25);
+}
+
+.red-orb {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ff6b7e 0%, var(--accent-red) 55%, var(--accent-ruby) 100%);
+  box-shadow: 0 0 25px rgba(255, 30, 66, 0.85),
+              0 0 60px rgba(255, 30, 66, 0.5),
+              inset 0 -2px 6px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 2;
+  animation: orbFloating 3s ease-in-out infinite alternate;
+}
+
+.orb-halo {
+  position: absolute;
+  inset: -20%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 30, 66, 0.45) 0%, transparent 70%);
+  filter: blur(4px);
+  z-index: 1;
+}
+
+.orb-shockwave {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent-red);
+  opacity: 0;
+  animation: shockwavePulse 2.4s infinite cubic-bezier(0.1, 0.8, 0.3, 1);
+}
+
+@keyframes shockwavePulse {
+  0% { transform: scale(1); opacity: 0.9; }
+  100% { transform: scale(2.8); opacity: 0; }
+}
+
+@keyframes orbFloating {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-4px); }
+}
+
+.letter-r { margin-right: 0.15rem; }
+.glyph-r { color: #bec2cc; }
+
+.letter-e { margin-right: -0.05rem; }
+.glyph-e {
+  color: #ffffff;
+  text-shadow: 0 0 35px rgba(255, 255, 255, 0.35);
+}
+
+.letter-d { position: relative; }
+.glyph-d {
+  color: #555963;
+  opacity: 0.88;
+}
+
+.glyph-d-shadow {
+  position: absolute;
+  top: 0;
+  left: 12px;
+  color: rgba(30, 32, 38, 0.75);
+  z-index: -1;
+  filter: blur(2px);
+  font-family: var(--font-display);
+  font-size: clamp(6.5rem, 15vw, 13.5rem);
+  font-weight: 900;
+  line-height: 0.82;
+  letter-spacing: -0.04em;
+  pointer-events: none;
+}
+
+/* Open Button matching Figma */
+.btn-figma-open {
+  background: transparent;
+  border: none;
+  outline: none;
+  position: relative;
+  padding: 0.6rem 2.8rem;
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: #8b8f9a;
+  text-transform: lowercase;
+  cursor: pointer;
+  transition: all 0.4s var(--ease-out-expo);
+}
+
+.open-txt {
+  position: relative;
+  z-index: 2;
+  transition: color 0.35s ease, letter-spacing 0.35s ease, text-shadow 0.35s ease;
+}
+
+.open-underline {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.25);
+  transition: width 0.4s var(--ease-out-expo), background-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.btn-figma-open:hover {
+  transform: translateY(-2px);
+}
+
+.btn-figma-open:hover .open-txt {
+  color: #ffffff;
+  letter-spacing: 0.26em;
+  text-shadow: 0 0 25px rgba(255, 255, 255, 0.6), 0 0 45px rgba(255, 30, 66, 0.5);
+}
+
+.btn-figma-open:hover .open-underline {
+  width: 100%;
+  background: var(--accent-red);
+  box-shadow: 0 0 12px var(--accent-red);
+}
+
+.btn-figma-open.large {
+  font-size: 2.4rem;
+  padding: 0.8rem 3.5rem;
+}
+
+.screen-footer-hint {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #555b68;
+  margin-top: 2rem;
+  letter-spacing: 0.08em;
+}
+
+/* ==========================================================================
+   SCREEN 2: MacBook Air - 13 (THE COMBAT RING & HERO GEAR)
+   ========================================================================== */
+.ring-stage-container {
+  width: 100%;
+}
+
+.ring-hero-card {
+  position: relative;
+  width: 100%;
+  height: 640px;
+  border-radius: 32px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 3rem;
+}
+
+.hero-image-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.boxer-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s var(--ease-out-expo);
+}
+
+.ring-hero-card:hover .boxer-hero-img {
+  transform: scale(1.04);
+}
+
+.hero-image-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 11, 14, 0.2) 0%, rgba(10, 11, 14, 0.4) 60%, rgba(10, 11, 14, 0.95) 100%);
+}
+
+/* Gear Thumbnail Card (Top-Left from Figma) */
+.gear-float-badge {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 1.4rem;
+  border-radius: 20px;
+  background: rgba(14, 16, 22, 0.85);
+}
+
+.gear-img-wrap {
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 30, 66, 0.4);
+}
+
+.gloves-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gear-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.gear-brand {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  color: var(--accent-red);
+  letter-spacing: 0.15em;
+}
+
+.gear-title {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.ring-action-zone {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+}
+
+/* ==========================================================================
+   SCREEN 3: MacBook Air - 12 (PROFILE REGISTRATION)
+   ========================================================================== */
+.profile-layout-container {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 2.5rem;
+  width: 100%;
+}
+
+.avatar-card {
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+
+.avatar-frame {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  border-radius: 28px;
+  background: #181a22;
+  border: 2px dashed rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.8rem;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.avatar-badge-online {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-red);
+  border: 3px solid var(--bg-card);
+  box-shadow: 0 0 12px var(--accent-red);
+}
+
+.avatar-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.avatar-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: var(--accent-red);
+}
+
+.avatar-caption {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.profile-form-card {
+  padding: 3rem;
+}
+
+.profile-form-title {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 2rem;
+  letter-spacing: -0.02em;
+}
+
+.figma-inputs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.input-card-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.field-label-pill {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+}
+
+.figma-input {
+  width: 100%;
+  padding: 1rem 1.4rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  color: #ffffff;
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.figma-input:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent-red);
+  box-shadow: 0 0 18px rgba(255, 30, 66, 0.3);
+}
+
+.btn-figma-continue {
+  margin-top: 1rem;
+  padding: 1.15rem 2.2rem;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--accent-red) 0%, #b50e29 100%);
+  border: none;
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(255, 30, 66, 0.4);
+  transition: transform 0.3s var(--ease-out-expo), box-shadow 0.3s ease;
+}
+
+.btn-figma-continue:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 15px 35px rgba(255, 30, 66, 0.6);
+}
+
+/* ==========================================================================
+   SCREEN 4: MacBook Air - 12 (BOTTOM) LOOKBOOK
+   ========================================================================== */
+.lookbook-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.lookbook-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  width: 100%;
+}
+
+.lookbook-card {
+  padding: 2rem;
+  border-radius: 28px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.look-badge {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: var(--accent-red);
+  margin-bottom: 1.2rem;
+}
+
+.look-image-wrap {
+  width: 100%;
+  height: 480px;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  background: #000;
+}
+
+.look-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out-expo);
+}
+
+.lookbook-card:hover .look-img {
+  transform: scale(1.05);
+}
+
+.look-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.look-sub {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.lookbook-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+/* ==========================================================================
+   SCREEN 5: MacBook Air - 14 (PRODUCT DETAIL & SPECS $100)
+   ========================================================================== */
+.product-layout-container {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 3rem;
+  width: 100%;
+}
+
+.product-visual-card {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.prod-img-box {
+  width: 100%;
+  height: 520px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #000;
+}
+
+.prod-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out-expo);
+}
+
+.prod-view-switcher {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.view-pill {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  padding: 0.5rem 1.2rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.view-pill:hover,
+.view-pill.active {
+  background: rgba(255, 30, 66, 0.2);
+  border-color: var(--accent-red);
+  color: #fff;
+}
+
+.product-specs-card {
+  padding: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.spec-edition-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  color: var(--accent-red);
+}
+
+.spec-prod-name {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: #fff;
+  margin: 0.8rem 0 2rem;
+  letter-spacing: -0.02em;
+}
+
+.spec-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  margin-bottom: 2.5rem;
+}
+
+.spec-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #ced3df;
+}
+
+.spec-item strong {
+  color: #ffffff;
+}
+
+.bullet-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-red);
+  box-shadow: 0 0 8px var(--accent-red);
+  flex-shrink: 0;
+  transform: translateY(-2px);
+}
+
+.purchase-zone {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.price-tag {
+  display: flex;
+  flex-direction: column;
+}
+
+.price-label {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.price-val {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.btn-buy-now {
+  padding: 1.2rem 3rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--accent-red) 0%, #a40c24 100%);
+  border: none;
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 35px rgba(255, 30, 66, 0.45);
+  transition: transform 0.3s var(--ease-out-expo), box-shadow 0.3s ease;
+}
+
+.btn-buy-now:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 18px 45px rgba(255, 30, 66, 0.65);
+}
+
+/* ==========================================================================
+   SCREEN 6: MacBook Air - 15..18 (3D INTERACTIVE VISA DEBIT CARD)
+   ========================================================================== */
+.checkout-layout-container {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 3rem;
+  width: 100%;
+  align-items: center;
+}
+
+/* 3D Card Scene & Flip Engine */
+.card-scene {
+  perspective: 1200px;
+  width: 100%;
+  max-width: 520px;
+  height: 330px;
+  margin: 0 auto;
+}
+
+.credit-card-3d {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.8s var(--ease-out-expo);
+  border-radius: 24px;
+}
+
+.credit-card-3d.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-side {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 24px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  padding: 2rem 2.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(255, 30, 66, 0.1);
+}
+
+/* Matching the dark graphite titanium card with lightning from Figma */
+.card-front {
+  background: radial-gradient(circle at 75% 25%, #2a2d36 0%, #17181d 55%, #0e0f13 100%);
+}
+
+.card-back {
+  background: #14151a;
+  transform: rotateY(180deg);
+  padding: 2rem 0;
+}
+
+/* Card Decorative Cyber Lightning & Red Dots from Figma */
+.card-lightning {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.25;
+}
+
+.lightning-1 {
+  top: 15%;
+  right: 18%;
+  width: 60px;
+  height: 100px;
+  border-right: 3px solid #ffffff;
+  border-bottom: 3px solid #ffffff;
+  transform: skewX(-25deg);
+}
+
+.lightning-2 {
+  bottom: 12%;
+  left: 12%;
+  width: 70px;
+  height: 80px;
+  border-left: 3px solid #ffffff;
+  border-top: 3px solid #ffffff;
+  transform: skewX(20deg);
+}
+
+.card-red-point {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent-red);
+  box-shadow: 0 0 15px var(--accent-red);
+}
+
+.dot-1 { top: 22%; right: 28%; }
+.dot-2 { bottom: 18%; left: 32%; }
+
+/* EMV Chip */
+.card-chip {
+  width: 50px;
+  height: 38px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #d4af37 0%, #f6e082 50%, #aa820a 100%);
+  border: 1px solid #735905;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.4);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 4px;
+}
+
+.chip-line {
+  width: 100%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Center Display Box from Figma (Card Number, etc.) */
+.card-active-input-box {
+  background: rgba(45, 48, 56, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 1.1rem 1.6rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.input-step-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent-red);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.input-step-value {
+  font-family: var(--font-mono);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: #ffffff;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+}
+
+.card-bottom-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.mini-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: #6a707e;
+  letter-spacing: 0.1em;
+  display: block;
+}
+
+.mini-val {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #d1d5df;
+}
+
+/* Visa Debit Logo */
+.visa-logo-wrap {
+  position: absolute;
+  bottom: 1.6rem;
+  right: 2rem;
+  text-align: right;
+  line-height: 0.9;
+}
+
+.visa-text {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -0.05em;
+  color: #ffffff;
+}
+
+.visa-sub {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  color: #9aa1b2;
+  display: block;
+}
+
+/* Card Back Elements */
+.card-magnetic-stripe {
+  width: 100%;
+  height: 48px;
+  background: #000000;
+  margin-top: 1rem;
+}
+
+.card-cvv-band {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 2rem;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.cvv-band-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.cvv-band-box {
+  width: 90px;
+  height: 38px;
+  background: #ffffff;
+  color: #000000;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+}
+
+.card-back-branding {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  margin-top: auto;
+}
+
+.brand-sub {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: #555b6a;
+}
+
+/* Step Controller for Payment Fields */
+.payment-controller-card {
+  padding: 2.8rem;
+}
+
+.payment-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+  margin-bottom: 2rem;
+}
+
+.pay-tab {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 0.5rem 0.2rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.pay-tab.active {
+  background: rgba(255, 30, 66, 0.2);
+  border-color: var(--accent-red);
+  color: #ffffff;
+}
+
+.pay-input-step {
+  display: none;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.pay-input-step.active {
+  display: flex;
+  animation: fadeIn 0.35s ease;
+}
+
+.styled-pay-input {
+  width: 100%;
+  padding: 1.1rem 1.4rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  letter-spacing: 0.1em;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.styled-pay-input:focus {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: var(--accent-red);
+  box-shadow: 0 0 20px rgba(255, 30, 66, 0.35);
+}
+
+.btn-step-next {
+  margin-top: 0.8rem;
+  padding: 1rem 1.6rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-step-next:hover {
+  background: var(--accent-red);
+  border-color: var(--accent-red);
+  box-shadow: 0 0 20px rgba(255, 30, 66, 0.5);
+}
+
+.step-btn-duo {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 1rem;
+  margin-top: 0.8rem;
+}
+
+.btn-step-prev {
+  padding: 1rem;
+  border-radius: 12px;
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-step-prev:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.btn-pay-complete {
+  padding: 1.1rem;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--accent-red) 0%, #b80c29 100%);
+  border: none;
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(255, 30, 66, 0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-pay-complete:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(255, 30, 66, 0.7);
+}
+
+/* ==========================================================================
+   SCREEN 7: SUCCESS / CHECKMARK MODAL (FIGMA BOTTOM FRAME)
+   ========================================================================== */
+.success-stage-box {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.success-card {
+  padding: 4rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+}
+
+.check-icon-halo {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.12);
+  border: 2px solid var(--accent-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 40px rgba(16, 185, 129, 0.4);
+  animation: pulseSuccess 2s infinite alternate ease-in-out;
+}
+
+@keyframes pulseSuccess {
+  0% { transform: scale(0.95); box-shadow: 0 0 25px rgba(16, 185, 129, 0.3); }
+  100% { transform: scale(1.05); box-shadow: 0 0 50px rgba(16, 185, 129, 0.6); }
+}
+
+.check-path {
+  stroke-dasharray: 50;
+  stroke-dashoffset: 50;
+  animation: drawCheck 0.8s var(--ease-out-expo) 0.2s forwards;
+}
+
+@keyframes drawCheck {
+  to { stroke-dashoffset: 0; }
+}
+
+.success-tag {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.18em;
+  color: var(--accent-green);
+}
+
+.success-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.success-desc {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  max-width: 500px;
+}
+
+.order-details-pills {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.order-pill {
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: #d1d5e0;
+}
+
+.order-pill span {
+  color: var(--text-muted);
+  margin-right: 4px;
+}
+
+.order-pill strong {
+  color: #ffffff;
+}
+
+/* Generic Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .master-hud {
+    width: 96%;
+    padding: 0.6rem 1rem;
+  }
+  .step-name {
+    display: none;
+  }
+  .product-layout-container,
+  .checkout-layout-container,
+  .profile-layout-container {
+    grid-template-columns: 1fr;
+  }
+  .ring-hero-card {
+    height: 480px;
+    padding: 1.5rem;
+  }
+  .lookbook-grid {
+    grid-template-columns: 1fr;
+  }
+}
